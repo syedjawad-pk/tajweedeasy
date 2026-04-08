@@ -188,10 +188,10 @@
         const COURSES = [
             { id: 1, title: "Noorani Qaida", category: "Beginners", price: 25, image: "./images/qaida.png", features: "Perfect for kids and absolute beginners to learn alphabet pronunciation.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-blue-400 to-blue-600" },
             { id: 2, title: "Nazra Quran", category: "Recitation", price: 25, image: "https://images.unsplash.com/photo-1609599006353-e629aaabfeae?auto=format&fit=crop&w=600&q=80", features: "Develop the ability to read the Quran fluently by looking at the text.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-emerald-400 to-emerald-600" },
-            { id: 3, title: "Hifz-e-Quran", category: "Advanced", price: 40, image: "https://images.unsplash.com/photo-1564507004663-b6dfb3c824d5?auto=format&fit=crop&w=600&q=80", features: "Step-by-step memorization with rigorous daily revision techniques.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-purple-400 to-purple-600" },
-            { id: 4, title: "Translation & Tafseer", category: "Understanding", price: 40, image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80", features: "Understand the profound meanings, context, and lessons of the verses.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-orange-400 to-orange-600" },
-            { id: 5, title: "Tajweed Rules", category: "Mastery", price: 25, image: "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=600&q=80", features: "Learn the correct articulation points and characteristics of Arabic letters.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-teal-400 to-teal-600" },
-            { id: 6, title: "Islamic Studies", category: "Kids", price: 25, image: "https://images.unsplash.com/photo-1564121211835-e88c852648ab?auto=format&fit=crop&w=600&q=80", features: "A specialized curriculum covering basic Fiqh, Seerah, and daily Duas.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-pink-400 to-pink-600" }
+            { id: 3, title: "Hifz-e-Quran", category: "Advanced", price: 40, image: "./images/hifzequran.jpg", features: "Step-by-step memorization with rigorous daily revision techniques.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-purple-400 to-purple-600" },
+            { id: 4, title: "Translation & Tafseer", category: "Understanding", price: 40, image: "./images/tafseer.jpg", features: "Understand the profound meanings, context, and lessons of the verses.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-orange-400 to-orange-600" },
+            { id: 5, title: "Tajweed Rules", category: "Mastery", price: 25, image: "./images/tajweed.png", features: "Learn the correct articulation points and characteristics of Arabic letters.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-teal-400 to-teal-600" },
+            { id: 6, title: "Islamic Studies", category: "Kids", price: 25, image: "./images/islamic.png", features: "A specialized curriculum covering basic Fiqh, Seerah, and daily Duas.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-pink-400 to-pink-600" }
         ];
 
         const FAQS = [
@@ -333,22 +333,33 @@
         const CourseMatcher = ({ onClose, scrollToSection }) => {
             const [step, setStep] = useState(1);
             const [data, setData] = useState({ target: 'myself', level: 'beginner' });
-            const [recommendation, setRecommendation] = useState(null);
+            const [recommendations, setRecommendations] = useState([]);
 
             const calculateMatch = (selectedLevel) => {
-                let match;
+                let matches = [];
                 if (selectedLevel === 'beginner') {
-                    match = COURSES.find(c => c.id === 1); // Qaida
+                    matches.push(COURSES.find(c => c.id === 1)); // Qaida
+                    if (data.target === 'child') {
+                        matches.push(COURSES.find(c => c.id === 6)); // Islamic Studies
+                    }
                 } else if (selectedLevel === 'reading') {
-                    match = COURSES.find(c => c.id === 2); // Nazra
-                } else if (selectedLevel === 'fluent' && data.target === 'child') {
-                    match = COURSES.find(c => c.id === 6); // Islamic Studies
-                } else {
-                    match = COURSES.find(c => c.id === 3); // Hifz
+                    matches.push(COURSES.find(c => c.id === 2)); // Nazra
+                    matches.push(COURSES.find(c => c.id === 5)); // Tajweed
+                    if (data.target === 'child') {
+                        matches.push(COURSES.find(c => c.id === 6)); // Islamic Studies
+                    }
+                } else if (selectedLevel === 'fluent') {
+                    matches.push(COURSES.find(c => c.id === 3)); // Hifz
+                    if (data.target === 'myself') {
+                        matches.push(COURSES.find(c => c.id === 4)); // Translation
+                        matches.push(COURSES.find(c => c.id === 5)); // Tajweed Rules
+                    } else {
+                        matches.push(COURSES.find(c => c.id === 6)); // Islamic Studies
+                    }
                 }
                 
                 setData(prev => ({...prev, level: selectedLevel}));
-                setRecommendation(match);
+                setRecommendations(matches);
                 setStep(3);
             };
 
@@ -392,18 +403,25 @@
                                 </div>
                             )}
 
-                            {step === 3 && recommendation && (
+                            {step === 3 && recommendations.length > 0 && (
                                 <div className="text-center animate-in zoom-in-95 duration-300">
                                     <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                         <Check className="text-emerald-600" size={32} />
                                     </div>
-                                    <h3 className="text-slate-500 mb-2">We recommend:</h3>
-                                    <h2 className="text-2xl font-bold text-slate-900 mb-2">{recommendation.title}</h2>
-                                    <p className="text-slate-600 mb-8">{recommendation.features}</p>
+                                    <h3 className="text-slate-500 mb-4">We recommend these courses:</h3>
+                                    
+                                    <div className="space-y-3 mb-8 text-left max-h-[35vh] overflow-y-auto custom-scrollbar pr-2">
+                                        {recommendations.map(rec => (
+                                            <div key={rec.id} className="p-4 border border-emerald-100 bg-emerald-50 rounded-xl">
+                                                <h2 className="text-lg font-bold text-slate-900 mb-1">{rec.title}</h2>
+                                                <p className="text-xs text-slate-600">{rec.features}</p>
+                                            </div>
+                                        ))}
+                                    </div>
                                     
                                     <div className="flex gap-4">
-                                        <button onClick={onClose} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-slate-600 hover:bg-slate-50">Close</button>
-                                        <button onClick={() => { onClose(); scrollToSection('contact'); }} className="flex-1 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 shadow-lg shadow-emerald-200">Start Free Trial</button>
+                                        <button onClick={onClose} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-slate-600 hover:bg-slate-50 transition-colors">Close</button>
+                                        <button onClick={() => { onClose(); scrollToSection('contact'); }} className="flex-1 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all">Start Free Trial</button>
                                     </div>
                                 </div>
                             )}
@@ -426,12 +444,7 @@
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollToSection('home')}>
-                                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
-                                    <BookOpen size={22} />
-                                </div>
-                                <div>
-                                    <span className={`text-xl font-bold tracking-tight block leading-none font-serif ${isScrolled ? 'text-slate-900' : 'text-slate-800'}`}>Tajweed<span className="text-emerald-600">Easy</span></span>
-                                </div>
+                                <img src="./images/logobg.png" alt="TajweedEasy Logo" className="h-10 md:h-12 w-auto transform scale-[4.5] origin-left" />
                             </div>
                             
                             <div className="hidden md:flex items-center gap-8">
@@ -619,7 +632,7 @@
             );
         };
 
-        const FAQSection = () => {
+        const FAQSection = ({ scrollToSection }) => {
             const [openIndex, setOpenIndex] = useState(0);
 
             return (
@@ -629,8 +642,27 @@
                             <div>
                                 <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6 font-serif">Frequently Asked Questions</h2>
                                 <p className="text-slate-600 mb-8">Everything you need to know about starting your classes with TajweedEasy.</p>
-                                <div className="relative rounded-2xl overflow-hidden shadow-2xl h-[400px]">
-                                    <img src="https://images.unsplash.com/photo-1588196749597-9ff046428619?auto=format&fit=crop&w=600&q=80" alt="Online Learning Screen" className="w-full h-full object-cover" />
+                                
+                                {/* USEFUL SUPPORT CARD INSTEAD OF STATIC IMAGE */}
+                                <div className="bg-emerald-900 rounded-[2rem] p-10 text-white shadow-2xl relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-emerald-500 rounded-full mix-blend-overlay filter blur-3xl opacity-40"></div>
+                                    <div className="relative z-10 flex flex-col h-full justify-center">
+                                        <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6 border border-white/20">
+                                            <MessageSquare size={32} className="text-emerald-300" />
+                                        </div>
+                                        <h3 className="text-3xl font-bold font-serif mb-4">Still have questions?</h3>
+                                        <p className="text-emerald-100 mb-8 leading-relaxed text-lg">
+                                            Can't find the answer you're looking for? Our dedicated team of experienced tutors is here to help you start your Quranic journey.
+                                        </p>
+                                        <div className="space-y-4">
+                                            <button onClick={() => scrollToSection('contact')} className="w-full py-4 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2">
+                                                <Mail size={18} /> Contact Support
+                                            </button>
+                                            <div className="flex items-center justify-center gap-2 text-sm text-emerald-200 mt-4">
+                                                <Phone size={16} /> <span>+92 300 1234567</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -695,7 +727,7 @@
                                             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><Phone size={20} /></div>
                                             <div>
                                                 <p className="text-sm text-slate-400">WhatsApp / Call</p>
-                                                <p className="font-bold">+1 (555) 123-4567</p>
+                                                <p className="font-bold">+92 300 1234567</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-4 text-white">
@@ -773,7 +805,7 @@
             };
 
             return (
-                <div className="font-sans text-slate-900 overflow-x-hidden">
+                <div className="font-sans text-slate-900 overflow-x-hidden flex flex-col min-h-screen">
                     <Navbar 
                         isScrolled={isScrolled} 
                         activeSection={activeSection} 
@@ -783,22 +815,21 @@
                         openMatcher={() => setIsMatcherOpen(true)}
                     />
                     
-                    <main>
+                    <main className="flex-grow">
                         <Hero scrollToSection={scrollToSection} openMatcher={() => setIsMatcherOpen(true)} />
                         <CoursesGrid />
                         <MethodologySection />
-                        <FAQSection />
+                        <FAQSection scrollToSection={scrollToSection} />
                         <ContactSection />
                     </main>
 
                     <AIChatWidget />
                     {isMatcherOpen && <CourseMatcher onClose={() => setIsMatcherOpen(false)} scrollToSection={scrollToSection} />}
 
-                    <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+                    <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 overflow-hidden mt-auto">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
                             <div className="flex items-center gap-2">
-                                <BookOpen className="text-emerald-500" />
-                                <span className="font-bold text-white text-lg font-serif">TajweedEasy</span>
+                                <img src="./images/logobg.png" alt="TajweedEasy Logo" className="h-10 md:h-12 w-auto transform scale-[4.5] origin-left" />
                             </div>
                             <div className="text-sm">© 2026 TajweedEasy. All rights reserved.</div>
                             <div className="flex gap-6">
