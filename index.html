@@ -186,18 +186,18 @@
 
         // --- DATA ---
         const COURSES = [
-            { id: 1, title: "Noorani Qaida", category: "Beginners", price: 30, image: "https://images.unsplash.com/photo-1585036156171-384164a8c675?auto=format&fit=crop&w=600&q=80", features: "Perfect for kids and absolute beginners", color: "from-blue-400 to-blue-600" },
-            { id: 2, title: "Nazra Quran", category: "Recitation", price: 40, image: "https://images.unsplash.com/photo-1609599006353-e629aaabfeae?auto=format&fit=crop&w=600&q=80", features: "Read the Quran fluently by looking", color: "from-emerald-400 to-emerald-600" },
-            { id: 3, title: "Hifz-e-Quran", category: "Advanced", price: 50, image: "https://images.unsplash.com/photo-1599827441372-0a7a92b3c60c?auto=format&fit=crop&w=600&q=80", features: "Step-by-step memorization & revision", color: "from-purple-400 to-purple-600" },
-            { id: 4, title: "Translation", category: "Tafseer", price: 45, image: "https://images.unsplash.com/photo-1584663639454-47d5e57c653b?auto=format&fit=crop&w=600&q=80", features: "Understand the meaning of the verses", color: "from-orange-400 to-orange-600" },
-            { id: 5, title: "Tajweed Rules", category: "Mastery", price: 35, image: "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=600&q=80", features: "Correct pronunciation and articulation", color: "from-teal-400 to-teal-600" },
-            { id: 6, title: "Islamic Studies", category: "Kids", price: 30, image: "https://images.unsplash.com/photo-1564121211835-e88c852648ab?auto=format&fit=crop&w=600&q=80", features: "Basic Fiqh, Seerah, and Duas", color: "from-pink-400 to-pink-600" }
+            { id: 1, title: "Noorani Qaida", category: "Beginners", price: 25, image: "https://images.unsplash.com/photo-1628348003632-15de4cc958b9?auto=format&fit=crop&w=600&q=80", features: "Perfect for kids and absolute beginners to learn alphabet pronunciation.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-blue-400 to-blue-600" },
+            { id: 2, title: "Nazra Quran", category: "Recitation", price: 25, image: "https://images.unsplash.com/photo-1609599006353-e629aaabfeae?auto=format&fit=crop&w=600&q=80", features: "Develop the ability to read the Quran fluently by looking at the text.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-emerald-400 to-emerald-600" },
+            { id: 3, title: "Hifz-e-Quran", category: "Advanced", price: 40, image: "https://images.unsplash.com/photo-1564507004663-b6dfb3c824d5?auto=format&fit=crop&w=600&q=80", features: "Step-by-step memorization with rigorous daily revision techniques.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-purple-400 to-purple-600" },
+            { id: 4, title: "Translation & Tafseer", category: "Understanding", price: 40, image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80", features: "Understand the profound meanings, context, and lessons of the verses.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-orange-400 to-orange-600" },
+            { id: 5, title: "Tajweed Rules", category: "Mastery", price: 25, image: "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=600&q=80", features: "Learn the correct articulation points and characteristics of Arabic letters.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-teal-400 to-teal-600" },
+            { id: 6, title: "Islamic Studies", category: "Kids", price: 25, image: "https://images.unsplash.com/photo-1564121211835-e88c852648ab?auto=format&fit=crop&w=600&q=80", features: "A specialized curriculum covering basic Fiqh, Seerah, and daily Duas.", schedule: "5 days a week (Fully customizable based on your availability)", color: "from-pink-400 to-pink-600" }
         ];
 
         const FAQS = [
             { q: "Do you have female tutors?", a: "Yes, we have dedicated female tutors available for sisters and daughters to ensure a comfortable learning environment." },
             { q: "How do online classes work?", a: "Classes are conducted via Zoom or Skype. You share a screen with the tutor who guides you through the lesson in real-time, just like an in-person class." },
-            { q: "Can I choose my own time?", a: "Absolutely. You can schedule classes based on your time zone and daily routine. We aim to be as flexible as possible." },
+            { q: "Can I choose my own time and days?", a: "Absolutely. While our base fees cover 5 days a week, the specific days and times are completely customizable to match your time zone and daily routine. You can choose to study 3 days, on weekends, etc." },
             { q: "Is there a trial period?", a: "Yes, we offer a free trial. This gives you a chance to experience our teaching style and decide if it's the right fit for you." }
         ];
 
@@ -251,7 +251,7 @@
                 setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
                 setIsTyping(true);
 
-                const systemPrompt = "You are an AI teaching assistant for 'TajweedEasy', an online Quran academy. You help users with basic Tajweed rules, simple Quranic history, and explain that TajweedEasy offers 1-on-1 online classes, flexible timings, and female tutors. Be polite, encouraging, and concise. If they ask about enrolling, tell them to use the Free Trial button.";
+                const systemPrompt = "You are an AI teaching assistant for 'TajweedEasy', an online Quran academy. You help users with basic Tajweed rules, simple Quranic history, and explain that TajweedEasy offers 1-on-1 online classes, highly customizable scheduling (base is 5 days/week), and female tutors. Pricing is $25 for most courses, and $40 for Hifz/Translation. Be polite, encouraging, and concise. If they ask about enrolling, tell them to use the Free Trial button.";
                 
                 const response = await callGeminiAPI(userMsg, systemPrompt);
                 
@@ -335,17 +335,19 @@
             const [data, setData] = useState({ target: 'myself', level: 'beginner' });
             const [recommendation, setRecommendation] = useState(null);
 
-            const calculateMatch = () => {
+            const calculateMatch = (selectedLevel) => {
                 let match;
-                if (data.level === 'beginner') {
+                if (selectedLevel === 'beginner') {
                     match = COURSES.find(c => c.id === 1); // Qaida
-                } else if (data.level === 'reading') {
+                } else if (selectedLevel === 'reading') {
                     match = COURSES.find(c => c.id === 2); // Nazra
-                } else if (data.level === 'fluent' && data.target === 'child') {
+                } else if (selectedLevel === 'fluent' && data.target === 'child') {
                     match = COURSES.find(c => c.id === 6); // Islamic Studies
                 } else {
                     match = COURSES.find(c => c.id === 3); // Hifz
                 }
+                
+                setData(prev => ({...prev, level: selectedLevel}));
                 setRecommendation(match);
                 setStep(3);
             };
@@ -382,9 +384,9 @@
                                 <div className="space-y-6 animate-in slide-in-from-right-8 duration-300">
                                     <h3 className="text-lg font-bold text-slate-800">What is the current reading level?</h3>
                                     <div className="space-y-3">
-                                        <button onClick={() => { setData({...data, level: 'beginner'}); calculateMatch(); }} className="w-full p-4 border border-slate-200 rounded-xl hover:border-emerald-500 text-left font-medium text-slate-700">Cannot read Arabic letters yet</button>
-                                        <button onClick={() => { setData({...data, level: 'reading'}); calculateMatch(); }} className="w-full p-4 border border-slate-200 rounded-xl hover:border-emerald-500 text-left font-medium text-slate-700">Can connect letters but reads slowly</button>
-                                        <button onClick={() => { setData({...data, level: 'fluent'}); calculateMatch(); }} className="w-full p-4 border border-slate-200 rounded-xl hover:border-emerald-500 text-left font-medium text-slate-700">Reads fluently, wants to memorize/learn rules</button>
+                                        <button onClick={() => calculateMatch('beginner')} className="w-full p-4 border border-slate-200 rounded-xl hover:border-emerald-500 text-left font-medium text-slate-700">Cannot read Arabic letters yet</button>
+                                        <button onClick={() => calculateMatch('reading')} className="w-full p-4 border border-slate-200 rounded-xl hover:border-emerald-500 text-left font-medium text-slate-700">Can connect letters but reads slowly</button>
+                                        <button onClick={() => calculateMatch('fluent')} className="w-full p-4 border border-slate-200 rounded-xl hover:border-emerald-500 text-left font-medium text-slate-700">Reads fluently, wants to memorize/learn rules</button>
                                     </div>
                                     <button onClick={() => setStep(1)} className="text-sm text-slate-400 hover:text-slate-600">← Back</button>
                                 </div>
@@ -488,7 +490,7 @@
                                         </span>
                                     </h1>
                                     <p className="text-xl text-slate-600 max-w-lg mx-auto lg:mx-0 leading-relaxed">
-                                        Join our dedicated tutors for 1-on-1 online sessions. We focus on correct pronunciation, flexible scheduling, and a supportive learning environment.
+                                        Join our dedicated tutors for 1-on-1 online sessions. We focus on correct pronunciation, highly flexible scheduling, and a supportive learning environment.
                                     </p>
                                 </FadeIn>
                                 
@@ -556,17 +558,25 @@
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {COURSES.map((course, index) => (
                                 <FadeIn key={course.id} delay={index * 100}>
-                                    <div className="group relative bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
-                                        <div className="h-48 overflow-hidden relative">
+                                    <div className="group relative bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 flex flex-col h-full">
+                                        <div className="h-48 overflow-hidden relative flex-shrink-0">
                                             <div className={`absolute inset-0 bg-gradient-to-br ${course.color} opacity-0 group-hover:opacity-20 transition-opacity z-10`}></div>
                                             <img src={course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                             <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold shadow-sm z-20">{course.category}</div>
                                         </div>
                                         
-                                        <div className="p-6">
+                                        <div className="p-6 flex flex-col flex-grow">
                                             <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-emerald-600 transition-colors">{course.title}</h3>
-                                            <p className="text-sm text-slate-500 mb-6 h-10">{course.features}</p>
-                                            <div className="flex items-center justify-between border-t border-slate-100 pt-4">
+                                            <p className="text-sm text-slate-600 mb-4 flex-grow">{course.features}</p>
+                                            
+                                            <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-3 mb-6">
+                                                <p className="text-xs text-emerald-800 flex items-start gap-2">
+                                                    <Clock size={14} className="mt-0.5 flex-shrink-0"/>
+                                                    <span>{course.schedule}</span>
+                                                </p>
+                                            </div>
+
+                                            <div className="flex items-center justify-between border-t border-slate-100 pt-4 mt-auto">
                                                 <span className="text-2xl font-bold text-slate-900">${course.price}<span className="text-sm text-slate-400 font-normal">/mo</span></span>
                                                 <button className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
                                                     <ArrowRight size={18}/>
@@ -582,7 +592,6 @@
             );
         };
 
-        // Replaced Testimonials with Methodology
         const MethodologySection = () => {
             return (
                 <section id="methodology" className="py-24 bg-emerald-900 text-emerald-50 relative overflow-hidden">
@@ -621,7 +630,7 @@
                                 <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6 font-serif">Frequently Asked Questions</h2>
                                 <p className="text-slate-600 mb-8">Everything you need to know about starting your classes with TajweedEasy.</p>
                                 <div className="relative rounded-2xl overflow-hidden shadow-2xl h-[400px]">
-                                    <img src="https://images.unsplash.com/photo-1576495199011-eb94736d05d6?auto=format&fit=crop&w=600&q=80" alt="Learning" className="w-full h-full object-cover" />
+                                    <img src="https://images.unsplash.com/photo-1588196749597-9ff046428619?auto=format&fit=crop&w=600&q=80" alt="Online Learning Screen" className="w-full h-full object-cover" />
                                 </div>
                             </div>
 
