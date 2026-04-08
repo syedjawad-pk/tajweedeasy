@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IlmAcademy - Modern Online Quran Learning</title>
+    <title>TajweedEasy - Online Quran Learning</title>
     
     <!-- Google Fonts for Modern Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -78,19 +78,10 @@
 
     <style>
         /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #10b981;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #059669;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #059669; }
         
         .glass {
             background: rgba(255, 255, 255, 0.7);
@@ -116,8 +107,8 @@
         import { 
             BookOpen, GraduationCap, Users, Star, Menu, X, Check, 
             ArrowRight, Mail, Phone, MapPin, PlayCircle, Clock, Award, Loader2,
-            Globe, Video, Calendar, ChevronDown, ChevronUp, Quote, Sparkles, 
-            Bot, Send, MessageSquare, XCircle, Lightbulb
+            Globe, Video, Calendar, ChevronDown, ChevronUp, Sparkles, 
+            Bot, Send, MessageSquare, Compass, Heart, ShieldCheck
         } from 'lucide-react';
         
         import { initializeApp } from 'firebase/app';
@@ -149,9 +140,9 @@
             console.error("Firebase Initialization Error:", e);
         }
 
-        // --- GEMINI API HELPER ---
+        // --- GEMINI API HELPER (For Chatbot) ---
         const callGeminiAPI = async (prompt, systemInstruction = "") => {
-            const apiKey = ""; // Runtime provided key
+            const apiKey = ""; // Environment provided key
             try {
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
                     method: 'POST',
@@ -169,7 +160,7 @@
                 return data.candidates?.[0]?.content?.parts?.[0]?.text || "I couldn't generate a response at this moment.";
             } catch (error) {
                 console.error("Gemini API Connection Error:", error);
-                return "Sorry, I'm having trouble connecting to my knowledge base. Please try again later.";
+                return "Sorry, I'm having trouble connecting right now. Please try again later.";
             }
         };
 
@@ -195,26 +186,31 @@
 
         // --- DATA ---
         const COURSES = [
-            { id: 1, title: "Noorani Qaida", category: "Beginners", price: 30, image: "https://images.unsplash.com/photo-1585036156171-384164a8c675?auto=format&fit=crop&w=600&q=80", lessons: 30, color: "from-blue-400 to-blue-600" },
-            { id: 2, title: "Nazra Quran", category: "Recitation", price: 40, image: "https://images.unsplash.com/photo-1609599006353-e629aaabfeae?auto=format&fit=crop&w=600&q=80", lessons: "Monthly", color: "from-emerald-400 to-emerald-600" },
-            { id: 3, title: "Hifz-e-Quran", category: "Advanced", price: 50, image: "https://images.unsplash.com/photo-1599827441372-0a7a92b3c60c?auto=format&fit=crop&w=600&q=80", lessons: "Daily", color: "from-purple-400 to-purple-600" },
-            { id: 4, title: "Translation", category: "Tafseer", price: 45, image: "https://images.unsplash.com/photo-1584663639454-47d5e57c653b?auto=format&fit=crop&w=600&q=80", lessons: 40, color: "from-orange-400 to-orange-600" },
-            { id: 5, title: "Tajweed Rules", category: "Mastery", price: 35, image: "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=600&q=80", lessons: 25, color: "from-teal-400 to-teal-600" },
-            { id: 6, title: "Islamic Studies", category: "Kids", price: 30, image: "https://images.unsplash.com/photo-1564121211835-e88c852648ab?auto=format&fit=crop&w=600&q=80", lessons: 20, color: "from-pink-400 to-pink-600" }
+            { id: 1, title: "Noorani Qaida", category: "Beginners", price: 30, image: "https://images.unsplash.com/photo-1585036156171-384164a8c675?auto=format&fit=crop&w=600&q=80", features: "Perfect for kids and absolute beginners", color: "from-blue-400 to-blue-600" },
+            { id: 2, title: "Nazra Quran", category: "Recitation", price: 40, image: "https://images.unsplash.com/photo-1609599006353-e629aaabfeae?auto=format&fit=crop&w=600&q=80", features: "Read the Quran fluently by looking", color: "from-emerald-400 to-emerald-600" },
+            { id: 3, title: "Hifz-e-Quran", category: "Advanced", price: 50, image: "https://images.unsplash.com/photo-1599827441372-0a7a92b3c60c?auto=format&fit=crop&w=600&q=80", features: "Step-by-step memorization & revision", color: "from-purple-400 to-purple-600" },
+            { id: 4, title: "Translation", category: "Tafseer", price: 45, image: "https://images.unsplash.com/photo-1584663639454-47d5e57c653b?auto=format&fit=crop&w=600&q=80", features: "Understand the meaning of the verses", color: "from-orange-400 to-orange-600" },
+            { id: 5, title: "Tajweed Rules", category: "Mastery", price: 35, image: "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=600&q=80", features: "Correct pronunciation and articulation", color: "from-teal-400 to-teal-600" },
+            { id: 6, title: "Islamic Studies", category: "Kids", price: 30, image: "https://images.unsplash.com/photo-1564121211835-e88c852648ab?auto=format&fit=crop&w=600&q=80", features: "Basic Fiqh, Seerah, and Duas", color: "from-pink-400 to-pink-600" }
         ];
 
         const FAQS = [
-            { q: "Do you have female tutors?", a: "Yes, we have certified female tutors available for sisters and young daughters to ensure a comfortable learning environment." },
-            { q: "How do online classes work?", a: "Classes are conducted via Zoom or Skype. You share a screen with the tutor who guides you through the lesson in real-time." },
-            { q: "Can I choose my own time?", a: "Absolutely. We offer 24/7 scheduling flexibility to match your time zone and daily routine." },
-            { q: "Is there a trial period?", a: "Yes, we offer a 3-day free trial with no obligation to continue if you are not satisfied." }
+            { q: "Do you have female tutors?", a: "Yes, we have dedicated female tutors available for sisters and daughters to ensure a comfortable learning environment." },
+            { q: "How do online classes work?", a: "Classes are conducted via Zoom or Skype. You share a screen with the tutor who guides you through the lesson in real-time, just like an in-person class." },
+            { q: "Can I choose my own time?", a: "Absolutely. You can schedule classes based on your time zone and daily routine. We aim to be as flexible as possible." },
+            { q: "Is there a trial period?", a: "Yes, we offer a free trial. This gives you a chance to experience our teaching style and decide if it's the right fit for you." }
         ];
 
-        const STATS = [
-            { label: "Active Students", value: "5,000+" },
-            { label: "Certified Tutors", value: "150+" },
-            { label: "Countries Reached", value: "35+" },
-            { label: "Years Excellence", value: "12+" },
+        const STATS_QUALITATIVE = [
+            { label: "Learning Mode", value: "1-on-1 Classes" },
+            { label: "Scheduling", value: "Highly Flexible" },
+            { label: "Our Focus", value: "Tajweed & Tarteel" },
+        ];
+
+        const METHODOLOGY = [
+            { icon: <Compass size={24} />, title: "Step-by-Step Approach", text: "We don't rush. We ensure every letter and rule is mastered before moving on to the next, building a strong foundation." },
+            { icon: <Heart size={24} />, title: "Patient & Encouraging", text: "Learning the Quran should be a joyous journey. Our tutors are trained to be patient, especially with young children." },
+            { icon: <ShieldCheck size={24} />, title: "Progress Tracking", text: "We keep track of your daily progress and regularly assess your reading to ensure continuous improvement." }
         ];
 
         // --- COMPONENTS ---
@@ -228,11 +224,11 @@
             );
         };
 
-        // --- NEW LLM COMPONENT: AI CHAT WIDGET ---
+        // --- LLM COMPONENT: AI CHAT WIDGET ---
         const AIChatWidget = () => {
             const [isOpen, setIsOpen] = useState(false);
             const [messages, setMessages] = useState([
-                { role: 'assistant', text: "Assalamu Alaikum! I am IlmAI, your virtual Quran assistant. Ask me about Tajweed rules, Surah meanings, or how to start learning." }
+                { role: 'assistant', text: "Assalamu Alaikum! I am the TajweedEasy Assistant. Feel free to ask me about Tajweed rules, how our classes work, or general Quranic questions." }
             ]);
             const [input, setInput] = useState('');
             const [isTyping, setIsTyping] = useState(false);
@@ -255,7 +251,7 @@
                 setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
                 setIsTyping(true);
 
-                const systemPrompt = "You are IlmAI, a polite, knowledgeable, and encouraging Islamic teaching assistant for IlmAcademy. You help users with Quranic studies, Tajweed rules, simple Tafseer, and general questions about Islam. Keep answers concise, respectful, and easy to understand. If asked about enrollment, encourage them to use the 'Free Trial' button.";
+                const systemPrompt = "You are an AI teaching assistant for 'TajweedEasy', an online Quran academy. You help users with basic Tajweed rules, simple Quranic history, and explain that TajweedEasy offers 1-on-1 online classes, flexible timings, and female tutors. Be polite, encouraging, and concise. If they ask about enrolling, tell them to use the Free Trial button.";
                 
                 const response = await callGeminiAPI(userMsg, systemPrompt);
                 
@@ -274,7 +270,7 @@
                                     <Bot size={20} />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-sm">IlmAI Assistant</h3>
+                                    <h3 className="font-bold text-sm">TajweedEasy Assistant</h3>
                                     <p className="text-xs text-emerald-100 flex items-center gap-1">
                                         <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span> Online
                                     </p>
@@ -284,7 +280,7 @@
                         </div>
                         
                         {/* Messages */}
-                        <div className="h-80 overflow-y-auto p-4 bg-slate-50 space-y-4">
+                        <div className="h-80 overflow-y-auto p-4 bg-slate-50 space-y-4 custom-scrollbar">
                             {messages.map((msg, i) => (
                                 <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                     <div className={`max-w-[80%] p-3 rounded-2xl text-sm leading-relaxed ${msg.role === 'user' ? 'bg-emerald-600 text-white rounded-br-none' : 'bg-white border border-slate-200 text-slate-700 rounded-bl-none shadow-sm'}`}>
@@ -310,7 +306,7 @@
                                 type="text" 
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                placeholder="Ask about Tajweed..."
+                                placeholder="Ask a question..."
                                 className="flex-1 bg-slate-50 border border-slate-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
                             />
                             <button type="submit" disabled={!input.trim() || isTyping} className="bg-emerald-600 text-white p-2 rounded-full hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md">
@@ -326,110 +322,86 @@
                     >
                         {isOpen ? <X size={28} /> : <MessageSquare size={28} />}
                         {!isOpen && (
-                            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+                            <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></span>
                         )}
                     </button>
                 </div>
             );
         };
 
-        // --- NEW LLM COMPONENT: AI STUDY PLANNER ---
-        const AIStudyPlanner = ({ onClose }) => {
+        // --- PRACTICAL COMPONENT: COURSE MATCHER ---
+        const CourseMatcher = ({ onClose, scrollToSection }) => {
             const [step, setStep] = useState(1);
-            const [data, setData] = useState({ level: 'Beginner', goal: 'Read Quran Fluently', time: '3 hours' });
-            const [plan, setPlan] = useState('');
-            const [loading, setLoading] = useState(false);
+            const [data, setData] = useState({ target: 'myself', level: 'beginner' });
+            const [recommendation, setRecommendation] = useState(null);
 
-            const generatePlan = async () => {
-                setLoading(true);
-                const prompt = `Create a concise, motivational 4-week Quran study plan for a student with the following profile:
-                - Current Level: ${data.level}
-                - Main Goal: ${data.goal}
-                - Availability: ${data.time} per week.
-                
-                Format the response with simple HTML tags (<h3>, <ul>, <li>, <p>, <strong>) suitable for direct rendering. Do not use markdown code blocks. Structure it week by week. Keep it encouraging.`;
-
-                const response = await callGeminiAPI(prompt, "You are an expert curriculum designer for Quranic studies.");
-                setPlan(response);
-                setLoading(false);
-                setStep(2);
+            const calculateMatch = () => {
+                let match;
+                if (data.level === 'beginner') {
+                    match = COURSES.find(c => c.id === 1); // Qaida
+                } else if (data.level === 'reading') {
+                    match = COURSES.find(c => c.id === 2); // Nazra
+                } else if (data.level === 'fluent' && data.target === 'child') {
+                    match = COURSES.find(c => c.id === 6); // Islamic Studies
+                } else {
+                    match = COURSES.find(c => c.id === 3); // Hifz
+                }
+                setRecommendation(match);
+                setStep(3);
             };
 
             return (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
-                        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 text-white flex justify-between items-start">
+                    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col">
+                        <div className="bg-slate-900 p-6 text-white flex justify-between items-start">
                             <div>
-                                <div className="inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full text-xs font-bold mb-2 backdrop-blur-sm">
-                                    <Sparkles size={12} /> Powered by Gemini AI
-                                </div>
-                                <h2 className="text-2xl font-serif font-bold">Personalized Study Plan</h2>
-                                <p className="text-emerald-100 text-sm opacity-90">Get a roadmap tailored to your schedule.</p>
+                                <h2 className="text-xl font-serif font-bold">Find Your Course</h2>
+                                <p className="text-slate-400 text-sm">Let us recommend the perfect starting point.</p>
                             </div>
-                            <button onClick={onClose} className="bg-white/20 hover:bg-white/30 p-2 rounded-full transition-colors"><X size={20}/></button>
+                            <button onClick={onClose} className="hover:bg-slate-800 p-2 rounded-full transition-colors"><X size={20}/></button>
                         </div>
 
-                        <div className="p-8 overflow-y-auto custom-scrollbar">
+                        <div className="p-8">
                             {step === 1 && (
-                                <div className="space-y-6">
-                                    <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Current Level</label>
-                                        <div className="grid grid-cols-3 gap-3">
-                                            {['Beginner', 'Intermediate', 'Advanced'].map(l => (
-                                                <button 
-                                                    key={l}
-                                                    onClick={() => setData({...data, level: l})}
-                                                    className={`py-3 rounded-xl text-sm font-medium border transition-all ${data.level === l ? 'border-emerald-500 bg-emerald-50 text-emerald-700 ring-2 ring-emerald-200' : 'border-slate-200 hover:border-emerald-300'}`}
-                                                >
-                                                    {l}
-                                                </button>
-                                            ))}
-                                        </div>
+                                <div className="space-y-6 animate-in slide-in-from-right-8 duration-300">
+                                    <h3 className="text-lg font-bold text-slate-800">Who are you looking classes for?</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <button onClick={() => { setData({...data, target: 'myself'}); setStep(2); }} className="p-6 border border-slate-200 rounded-2xl hover:border-emerald-500 hover:bg-emerald-50 transition-all text-center">
+                                            <Users className="mx-auto mb-2 text-emerald-600" size={32}/>
+                                            <span className="font-bold text-slate-700">For Myself</span>
+                                        </button>
+                                        <button onClick={() => { setData({...data, target: 'child'}); setStep(2); }} className="p-6 border border-slate-200 rounded-2xl hover:border-emerald-500 hover:bg-emerald-50 transition-all text-center">
+                                            <Star className="mx-auto mb-2 text-emerald-600" size={32}/>
+                                            <span className="font-bold text-slate-700">For My Child</span>
+                                        </button>
                                     </div>
-                                    
-                                    <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Primary Goal</label>
-                                        <input 
-                                            type="text" 
-                                            value={data.goal} 
-                                            onChange={e => setData({...data, goal: e.target.value})}
-                                            className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all"
-                                            placeholder="e.g., Memorize Juz 30, Learn Tajweed..."
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Weekly Availability</label>
-                                        <select 
-                                            value={data.time}
-                                            onChange={e => setData({...data, time: e.target.value})}
-                                            className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500"
-                                        >
-                                            <option>2 hours</option>
-                                            <option>3 hours</option>
-                                            <option>5 hours</option>
-                                            <option>7+ hours</option>
-                                        </select>
-                                    </div>
-
-                                    <button 
-                                        onClick={generatePlan} 
-                                        disabled={loading}
-                                        className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold text-lg hover:bg-emerald-600 transition-all shadow-lg flex items-center justify-center gap-2"
-                                    >
-                                        {loading ? <Loader2 className="animate-spin"/> : <><Lightbulb size={20} /> Generate My Plan</>}
-                                    </button>
                                 </div>
                             )}
 
                             {step === 2 && (
-                                <div className="animate-in slide-in-from-bottom-10 duration-500">
-                                    <div className="prose prose-emerald max-w-none ai-content bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                                        <div dangerouslySetInnerHTML={{ __html: plan }} />
+                                <div className="space-y-6 animate-in slide-in-from-right-8 duration-300">
+                                    <h3 className="text-lg font-bold text-slate-800">What is the current reading level?</h3>
+                                    <div className="space-y-3">
+                                        <button onClick={() => { setData({...data, level: 'beginner'}); calculateMatch(); }} className="w-full p-4 border border-slate-200 rounded-xl hover:border-emerald-500 text-left font-medium text-slate-700">Cannot read Arabic letters yet</button>
+                                        <button onClick={() => { setData({...data, level: 'reading'}); calculateMatch(); }} className="w-full p-4 border border-slate-200 rounded-xl hover:border-emerald-500 text-left font-medium text-slate-700">Can connect letters but reads slowly</button>
+                                        <button onClick={() => { setData({...data, level: 'fluent'}); calculateMatch(); }} className="w-full p-4 border border-slate-200 rounded-xl hover:border-emerald-500 text-left font-medium text-slate-700">Reads fluently, wants to memorize/learn rules</button>
                                     </div>
-                                    <div className="mt-6 flex gap-4">
-                                        <button onClick={() => setStep(1)} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-slate-600 hover:bg-slate-50">Start Over</button>
-                                        <button onClick={onClose} className="flex-1 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 shadow-lg shadow-emerald-200">Save & Close</button>
+                                    <button onClick={() => setStep(1)} className="text-sm text-slate-400 hover:text-slate-600">← Back</button>
+                                </div>
+                            )}
+
+                            {step === 3 && recommendation && (
+                                <div className="text-center animate-in zoom-in-95 duration-300">
+                                    <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <Check className="text-emerald-600" size={32} />
+                                    </div>
+                                    <h3 className="text-slate-500 mb-2">We recommend:</h3>
+                                    <h2 className="text-2xl font-bold text-slate-900 mb-2">{recommendation.title}</h2>
+                                    <p className="text-slate-600 mb-8">{recommendation.features}</p>
+                                    
+                                    <div className="flex gap-4">
+                                        <button onClick={onClose} className="flex-1 py-3 border border-slate-200 rounded-xl font-bold text-slate-600 hover:bg-slate-50">Close</button>
+                                        <button onClick={() => { onClose(); scrollToSection('contact'); }} className="flex-1 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 shadow-lg shadow-emerald-200">Start Free Trial</button>
                                     </div>
                                 </div>
                             )}
@@ -439,11 +411,11 @@
             );
         };
 
-        const Navbar = ({ isScrolled, activeSection, scrollToSection, isMenuOpen, setIsMenuOpen, openPlanner }) => {
+        const Navbar = ({ isScrolled, activeSection, scrollToSection, isMenuOpen, setIsMenuOpen, openMatcher }) => {
             const navItems = [
                 { id: 'home', label: 'Home' },
-                { id: 'features', label: 'Why Us' },
                 { id: 'courses', label: 'Courses' },
+                { id: 'methodology', label: 'How We Teach' },
                 { id: 'faq', label: 'FAQs' },
             ];
 
@@ -456,7 +428,7 @@
                                     <BookOpen size={22} />
                                 </div>
                                 <div>
-                                    <span className={`text-xl font-bold tracking-tight block leading-none font-serif ${isScrolled ? 'text-slate-900' : 'text-slate-800'}`}>Ilm<span className="text-emerald-600">Academy</span></span>
+                                    <span className={`text-xl font-bold tracking-tight block leading-none font-serif ${isScrolled ? 'text-slate-900' : 'text-slate-800'}`}>Tajweed<span className="text-emerald-600">Easy</span></span>
                                 </div>
                             </div>
                             
@@ -464,8 +436,8 @@
                                 {navItems.map((item) => (
                                     <button key={item.id} onClick={() => scrollToSection(item.id)} className={`text-sm font-medium transition-all hover:-translate-y-0.5 ${activeSection === item.id ? 'text-emerald-600 font-bold' : 'text-slate-600 hover:text-emerald-600'}`}>{item.label}</button>
                                 ))}
-                                <button onClick={openPlanner} className="bg-white/80 backdrop-blur text-emerald-700 border border-emerald-200 px-4 py-2 rounded-full text-xs font-bold hover:bg-emerald-50 transition-all flex items-center gap-1.5">
-                                    <Sparkles size={14} className="text-emerald-500" /> AI Planner
+                                <button onClick={openMatcher} className="bg-white/80 backdrop-blur text-emerald-700 border border-emerald-200 px-4 py-2 rounded-full text-xs font-bold hover:bg-emerald-50 transition-all flex items-center gap-1.5">
+                                    <Compass size={14} className="text-emerald-500" /> Find Course
                                 </button>
                                 <button onClick={() => scrollToSection('contact')} className="bg-slate-900 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-emerald-600 transition-all shadow-lg hover:shadow-emerald-500/20 transform hover:scale-105">
                                     Free Trial
@@ -485,8 +457,8 @@
                             {navItems.map((item) => (
                                 <button key={item.id} onClick={() => scrollToSection(item.id)} className="w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-50 text-slate-600 font-medium">{item.label}</button>
                             ))}
-                            <button onClick={openPlanner} className="w-full mt-2 bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-3 rounded-lg font-bold flex items-center justify-center gap-2">
-                                <Sparkles size={16} /> AI Study Planner
+                            <button onClick={openMatcher} className="w-full mt-2 bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-3 rounded-lg font-bold flex items-center justify-center gap-2">
+                                <Compass size={16} /> Course Matcher
                             </button>
                         </div>
                     )}
@@ -494,13 +466,12 @@
             );
         };
 
-        const Hero = ({ scrollToSection, openPlanner }) => {
+        const Hero = ({ scrollToSection, openMatcher }) => {
             return (
                 <section id="home" className="relative min-h-screen flex items-center pt-20 overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
-                        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-                        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-                        <div className="absolute bottom-[-20%] left-[20%] w-[500px] h-[500px] bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+                        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-emerald-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
+                        <div className="absolute bottom-[-20%] left-[20%] w-[500px] h-[500px] bg-teal-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-4000"></div>
                     </div>
 
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
@@ -508,16 +479,16 @@
                             <div className="space-y-8 text-center lg:text-left">
                                 <FadeIn>
                                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/50 border border-emerald-100 backdrop-blur-sm shadow-sm text-emerald-800 font-bold text-xs uppercase tracking-wider mb-4">
-                                        <Sparkles size={14} className="text-emerald-500" /> AI-Powered Learning
+                                        Welcome to TajweedEasy
                                     </div>
                                     <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight text-slate-900 leading-[1.1] font-serif">
-                                        Read Quran with <br/>
+                                        Master the Quran <br/>
                                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">
-                                            Tajweed & Tarteel
+                                            Step by Step
                                         </span>
                                     </h1>
                                     <p className="text-xl text-slate-600 max-w-lg mx-auto lg:mx-0 leading-relaxed">
-                                        Connect with expert tutors for 1-on-1 sessions. Use our new AI tools to personalize your hifz and revision schedule.
+                                        Join our dedicated tutors for 1-on-1 online sessions. We focus on correct pronunciation, flexible scheduling, and a supportive learning environment.
                                     </p>
                                 </FadeIn>
                                 
@@ -526,17 +497,17 @@
                                         <button onClick={() => scrollToSection('contact')} className="px-8 py-4 bg-slate-900 text-white font-bold rounded-full shadow-xl hover:bg-emerald-600 hover:shadow-emerald-500/30 transition-all transform hover:-translate-y-1 flex items-center gap-2">
                                             Start Free Trial <ArrowRight size={18} />
                                         </button>
-                                        <button onClick={openPlanner} className="px-8 py-4 bg-white text-slate-700 font-bold rounded-full border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 transition-all flex items-center gap-2 group">
-                                            <Sparkles size={18} className="text-emerald-500 group-hover:scale-110 transition-transform"/> Generate Plan
+                                        <button onClick={openMatcher} className="px-8 py-4 bg-white text-slate-700 font-bold rounded-full border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 transition-all flex items-center gap-2 group">
+                                            <Compass size={18} className="text-emerald-500 group-hover:scale-110 transition-transform"/> Find Your Course
                                         </button>
                                     </div>
                                 </FadeIn>
 
                                 <FadeIn delay={400}>
                                     <div className="grid grid-cols-3 gap-4 border-t border-slate-200/60 pt-8 mt-4">
-                                        {STATS.slice(0, 3).map((stat, i) => (
+                                        {STATS_QUALITATIVE.map((stat, i) => (
                                             <div key={i}>
-                                                <p className="text-2xl lg:text-3xl font-bold text-slate-900">{stat.value}</p>
+                                                <p className="text-lg lg:text-xl font-bold text-slate-900">{stat.value}</p>
                                                 <p className="text-xs text-slate-500 font-medium uppercase tracking-wide">{stat.label}</p>
                                             </div>
                                         ))}
@@ -547,29 +518,23 @@
                             <div className="relative hidden lg:block h-[600px]">
                                 <div className="absolute right-0 top-10 w-4/5 h-[500px] rounded-[3rem] overflow-hidden shadow-2xl border-[8px] border-white animate-float">
                                     <img src="https://images.unsplash.com/photo-1609599006353-e629aaabfeae?auto=format&fit=crop&w=800&q=80" alt="Quran" className="w-full h-full object-cover" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-8">
-                                        <p className="text-white font-serif text-2xl italic">"Recite in the name of your Lord..."</p>
-                                    </div>
                                 </div>
                                 
-                                <div className="absolute top-20 left-10 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 flex items-center gap-3 animate-float-delayed max-w-[200px]">
+                                <div className="absolute top-20 left-10 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 flex items-center gap-3 animate-float-delayed max-w-[220px]">
                                     <div className="bg-green-100 p-2 rounded-lg"><Check className="text-green-600" size={20}/></div>
                                     <div>
-                                        <p className="text-xs text-slate-500 font-bold">Daily Progress</p>
-                                        <p className="text-sm font-bold text-slate-900">Surah Al-Fatiha</p>
+                                        <p className="text-xs text-slate-500 font-bold">Progress Tracking</p>
+                                        <p className="text-sm font-bold text-slate-900">Structured Daily Lessons</p>
                                     </div>
                                 </div>
 
                                 <div className="absolute bottom-20 left-0 bg-white/90 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-white/50 flex items-center gap-4 animate-float max-w-xs">
-                                    <div className="relative">
-                                        <div className="w-12 h-12 rounded-full bg-slate-200 overflow-hidden border-2 border-white shadow-sm">
-                                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Tutor" />
-                                        </div>
-                                        <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                                    <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 border-2 border-white shadow-sm">
+                                        <Users size={24} />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-bold text-slate-900">Ustadha Fatima</p>
-                                        <p className="text-xs text-green-600 font-medium">Online Now • Hifz Expert</p>
+                                        <p className="text-sm font-bold text-slate-900">Qualified Tutors</p>
+                                        <p className="text-xs text-green-600 font-medium">Dedicated & Patient</p>
                                     </div>
                                 </div>
                             </div>
@@ -600,17 +565,42 @@
                                         
                                         <div className="p-6">
                                             <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-emerald-600 transition-colors">{course.title}</h3>
-                                            <div className="flex items-center gap-4 text-sm text-slate-500 mb-6">
-                                                <div className="flex items-center gap-1"><PlayCircle size={14}/> {course.lessons} Lessons</div>
-                                                <div className="flex items-center gap-1"><Star size={14} className="text-yellow-400 fill-yellow-400"/> 4.9</div>
-                                            </div>
-                                            <div className="flex items-center justify-between">
+                                            <p className="text-sm text-slate-500 mb-6 h-10">{course.features}</p>
+                                            <div className="flex items-center justify-between border-t border-slate-100 pt-4">
                                                 <span className="text-2xl font-bold text-slate-900">${course.price}<span className="text-sm text-slate-400 font-normal">/mo</span></span>
                                                 <button className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
                                                     <ArrowRight size={18}/>
                                                 </button>
                                             </div>
                                         </div>
+                                    </div>
+                                </FadeIn>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Replaced Testimonials with Methodology
+        const MethodologySection = () => {
+            return (
+                <section id="methodology" className="py-24 bg-emerald-900 text-emerald-50 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-10"></div>
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                        <div className="text-center mb-16">
+                            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-serif">Our Teaching Methodology</h2>
+                            <p className="text-emerald-200 max-w-2xl mx-auto">We focus on quality education, ensuring every student learns at their own pace in a supportive environment.</p>
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-8">
+                            {METHODOLOGY.map((method, index) => (
+                                <FadeIn key={index} delay={index * 200}>
+                                    <div className="bg-emerald-800/50 p-8 rounded-2xl backdrop-blur-sm border border-emerald-700 hover:bg-emerald-800 transition-colors text-center h-full">
+                                        <div className="w-16 h-16 rounded-full bg-emerald-600 flex items-center justify-center text-white mx-auto mb-6 shadow-lg border-2 border-emerald-400">
+                                            {method.icon}
+                                        </div>
+                                        <h3 className="text-xl font-bold text-white mb-4">{method.title}</h3>
+                                        <p className="text-emerald-100 leading-relaxed">{method.text}</p>
                                     </div>
                                 </FadeIn>
                             ))}
@@ -629,15 +619,9 @@
                         <div className="grid lg:grid-cols-2 gap-16 items-start">
                             <div>
                                 <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6 font-serif">Frequently Asked Questions</h2>
-                                <p className="text-slate-600 mb-8">Everything you need to know about our academy, billing, and methodology.</p>
+                                <p className="text-slate-600 mb-8">Everything you need to know about starting your classes with TajweedEasy.</p>
                                 <div className="relative rounded-2xl overflow-hidden shadow-2xl h-[400px]">
-                                    <img src="https://images.unsplash.com/photo-1576495199011-eb94736d05d6?auto=format&fit=crop&w=600&q=80" alt="Teacher" className="w-full h-full object-cover" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/80 to-transparent flex items-end p-8">
-                                        <div className="text-white">
-                                            <p className="font-bold text-lg">Still have questions?</p>
-                                            <p className="text-emerald-200 text-sm">Contact our support team 24/7.</p>
-                                        </div>
-                                    </div>
+                                    <img src="https://images.unsplash.com/photo-1576495199011-eb94736d05d6?auto=format&fit=crop&w=600&q=80" alt="Learning" className="w-full h-full object-cover" />
                                 </div>
                             </div>
 
@@ -670,12 +654,12 @@
             const handleSubmit = async (e) => {
                 e.preventDefault();
                 if (!firebaseInitialized) {
-                    alert("Demo Mode: Data won't be saved.");
+                    alert("Demo Mode: Data won't be saved (Firebase config missing).");
                     return;
                 }
                 setStatus('submitting');
                 try {
-                    await new Promise(r => setTimeout(r, 2000));
+                    await new Promise(r => setTimeout(r, 1500));
                     await addDoc(collection(db, 'contact_messages'), {
                         ...formData,
                         timestamp: serverTimestamp()
@@ -687,37 +671,36 @@
             };
 
             return (
-                <section id="contact" className="relative py-24 bg-emerald-900 text-white overflow-hidden">
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-10"></div>
-                    <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-500 rounded-full mix-blend-overlay filter blur-3xl opacity-20 animate-pulse-slow"></div>
-
+                <section id="contact" className="relative py-24 bg-white overflow-hidden">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                        <div className="grid lg:grid-cols-2 gap-16">
-                            <div>
-                                <h2 className="text-4xl md:text-5xl font-bold mb-6 font-serif">Start Your Journey Today</h2>
-                                <p className="text-emerald-100 text-lg mb-10 leading-relaxed">
-                                    Book your free 3-day trial. No credit card required. Experience our teaching quality first-hand.
-                                </p>
-                                <div className="space-y-6">
-                                    <div className="flex items-center gap-4 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 hover:bg-white/20 transition-colors">
-                                        <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white"><Phone size={24} /></div>
-                                        <div>
-                                            <p className="text-sm text-emerald-200 uppercase tracking-wider">WhatsApp / Call</p>
-                                            <p className="text-xl font-bold">+1 (555) 123-4567</p>
+                        <div className="bg-slate-900 rounded-[3rem] overflow-hidden shadow-2xl flex flex-col lg:flex-row">
+                            <div className="lg:w-5/12 p-10 md:p-16 relative overflow-hidden flex flex-col justify-between">
+                                <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-600 rounded-full mix-blend-overlay filter blur-3xl opacity-50"></div>
+                                <div className="relative z-10">
+                                    <h2 className="text-4xl font-bold mb-4 font-serif text-white">Start Your Trial</h2>
+                                    <p className="text-emerald-100 mb-10 leading-relaxed">
+                                        Book your free trial class today. Let us help you or your child connect with the Quran.
+                                    </p>
+                                    <div className="space-y-6">
+                                        <div className="flex items-center gap-4 text-white">
+                                            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><Phone size={20} /></div>
+                                            <div>
+                                                <p className="text-sm text-slate-400">WhatsApp / Call</p>
+                                                <p className="font-bold">+1 (555) 123-4567</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="flex items-center gap-4 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 hover:bg-white/20 transition-colors">
-                                        <div className="w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white"><Mail size={24} /></div>
-                                        <div>
-                                            <p className="text-sm text-emerald-200 uppercase tracking-wider">Email</p>
-                                            <p className="text-xl font-bold">admissions@ilmacademy.com</p>
+                                        <div className="flex items-center gap-4 text-white">
+                                            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><Mail size={20} /></div>
+                                            <div>
+                                                <p className="text-sm text-slate-400">Email</p>
+                                                <p className="font-bold">info@tajweedeasy.com</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="bg-white p-8 md:p-10 rounded-3xl shadow-2xl text-slate-900">
-                                <h3 className="text-2xl font-bold mb-6">Free Trial Registration</h3>
+                            <div className="lg:w-7/12 bg-white p-10 md:p-16">
                                 <form onSubmit={handleSubmit} className="space-y-4">
                                     <div className="grid md:grid-cols-2 gap-4">
                                         <div>
@@ -725,7 +708,7 @@
                                             <input type="text" required className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all" onChange={e => setFormData({...formData, name: e.target.value})} />
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Phone</label>
+                                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Phone Number</label>
                                             <input type="tel" required className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all" onChange={e => setFormData({...formData, phone: e.target.value})} />
                                         </div>
                                     </div>
@@ -739,8 +722,8 @@
                                             {COURSES.map(c => <option key={c.id} value={c.title}>{c.title}</option>)}
                                         </select>
                                     </div>
-                                    <button type="submit" disabled={status === 'submitting'} className={`w-full py-4 rounded-xl font-bold text-lg text-white transition-all shadow-lg transform active:scale-95 ${status === 'success' ? 'bg-green-500' : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200'}`}>
-                                        {status === 'submitting' ? <Loader2 className="animate-spin mx-auto"/> : status === 'success' ? 'Request Sent!' : 'Book Free Class'}
+                                    <button type="submit" disabled={status === 'submitting'} className={`w-full py-4 mt-4 rounded-xl font-bold text-lg text-white transition-all shadow-lg transform active:scale-95 ${status === 'success' ? 'bg-green-500' : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200'}`}>
+                                        {status === 'submitting' ? <Loader2 className="animate-spin mx-auto"/> : status === 'success' ? 'Request Received!' : 'Book Free Class'}
                                     </button>
                                 </form>
                             </div>
@@ -754,12 +737,12 @@
             const [isMenuOpen, setIsMenuOpen] = useState(false);
             const [activeSection, setActiveSection] = useState('home');
             const [isScrolled, setIsScrolled] = useState(false);
-            const [isPlannerOpen, setIsPlannerOpen] = useState(false);
+            const [isMatcherOpen, setIsMatcherOpen] = useState(false);
 
             useEffect(() => {
                 const handleScroll = () => {
                     setIsScrolled(window.scrollY > 50);
-                    const sections = ['home', 'courses', 'faq', 'contact'];
+                    const sections = ['home', 'courses', 'methodology', 'faq', 'contact'];
                     for (const sec of sections) {
                         const el = document.getElementById(sec);
                         if (el && window.scrollY >= (el.offsetTop - 100)) {
@@ -788,26 +771,27 @@
                         scrollToSection={scrollToSection} 
                         isMenuOpen={isMenuOpen} 
                         setIsMenuOpen={setIsMenuOpen} 
-                        openPlanner={() => setIsPlannerOpen(true)}
+                        openMatcher={() => setIsMatcherOpen(true)}
                     />
                     
                     <main>
-                        <Hero scrollToSection={scrollToSection} openPlanner={() => setIsPlannerOpen(true)} />
+                        <Hero scrollToSection={scrollToSection} openMatcher={() => setIsMatcherOpen(true)} />
                         <CoursesGrid />
+                        <MethodologySection />
                         <FAQSection />
                         <ContactSection />
                     </main>
 
                     <AIChatWidget />
-                    {isPlannerOpen && <AIStudyPlanner onClose={() => setIsPlannerOpen(false)} />}
+                    {isMatcherOpen && <CourseMatcher onClose={() => setIsMatcherOpen(false)} scrollToSection={scrollToSection} />}
 
                     <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
                             <div className="flex items-center gap-2">
                                 <BookOpen className="text-emerald-500" />
-                                <span className="font-bold text-white text-lg">IlmAcademy</span>
+                                <span className="font-bold text-white text-lg font-serif">TajweedEasy</span>
                             </div>
-                            <div className="text-sm">© 2025 IlmAcademy. All rights reserved.</div>
+                            <div className="text-sm">© 2026 TajweedEasy. All rights reserved.</div>
                             <div className="flex gap-6">
                                 <a href="#" className="hover:text-emerald-500 transition-colors">Terms</a>
                                 <a href="#" className="hover:text-emerald-500 transition-colors">Privacy</a>
